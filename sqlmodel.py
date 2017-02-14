@@ -36,17 +36,35 @@ def create_puppy(slug, name, image_url):
         cursor.close()
         conn.close()
 
-def read(slug):
+def read_all():
     try:
         conn = connect()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * from puppytable WHERE puppytable.name = "+"Rover")
+        cursor.execute("SELECT * from puppytable")
         row = cursor.fetchall()
         print(row)
         conn.commit()
         cursor.close()
         conn.close()
+    except Exception as e:
+        print("Uh oh, can't connect. Invalid dbname, user or password?")
+        print(e)
+        cursor.close()
+        conn.close()
+
+def read(slug):
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * from puppytable WHERE puppytable.slug = '"+ slug + "'")
+        row = cursor.fetchone()
+        print(row)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return row
     except Exception as e:
         print("Uh oh, can't connect. Invalid dbname, user or password?")
         print(e)
@@ -59,4 +77,3 @@ def connect():
     conn = psycopg2.connect(connect_str)
     return conn
 
-read("spot")
